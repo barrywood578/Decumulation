@@ -225,9 +225,22 @@ class TestTaxes(unittest.TestCase):
         self.assertTrue(("Location 'BADLOC' invalid, not one of BC,AB,SK,MB,"
                          "ON,QC,NB,PE,NS,NL") in str(context.exception))
 
+    def test_max_combined_tax_rate(self):
+        tax = taxes()
+        max_rate = tax._max_combined_tax_rate()
+        self.assertEqual(max_rate, 0.1316+.33)
+
     def test_compute_taxes(self):
         tax = taxes()
-        fed, prov = tax.compute_taxes(1000)
-        self.assertEqual(fed, 205)
-        self.assertEqual(prov, 50.5)
+        tot_tax = tax.compute_taxes(1000)
+        self.assertEqual(tot_tax, 255.5)
 
+    def test_gross_income_for_net_income(self):
+        tax = taxes()
+        gross, tot_tax = tax.gross_income_for_net_income(50000)
+        self.assertEqual(gross, 68442.33)
+        self.assertEqual(tot_tax, 18442.33)
+
+        gross, tot_tax = tax.gross_income_for_net_income(150000)
+        self.assertEqual(gross, 230737.25)
+        self.assertEqual(tot_tax, 80737.25)
