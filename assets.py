@@ -21,10 +21,15 @@ class assets(object):
         self.salary = None
         self.income_min = 0
         self.income_max = 0
+        self.income_bank = 0
 
-    def update_value(self):
+    def update_value(self, add_income=False):
         delta = random.uniform(self.range_min, self.range_max)
-        self.current_value = self.current_value * delta
+        if add_income:
+            self.current_value += self.income_bank
+            self.income_bank = 0
+        self.current_value += self.current_value * delta
+
 
     def set_income_range(self, income_min, income_max, salary=None ):
         self.income_min = income_min
@@ -39,7 +44,27 @@ class assets(object):
             income = self.current_value * random_factor
         else:
             income = self.salary * random_factor
+        self.income_bank += income
         return income
+
+    def take_profit(self, profit):
+        if profit <= self.income_bank:
+            self.income_bank -= profit
+            return profit
+        profit_taken = self.income_bank
+        capital_redemption = profit - self.income_bank
+        self.income_bank = 0
+        if capital_redemption <= self.current_value:
+            self.current_value -= capital_redemption
+            return profit
+        profit_taken += self.current_value
+        self.current_value = 0
+        return profit_taken
+
+    def worthless(self):
+        no_assets = (self.current_value == 0) and (self.income_bank == 0)
+        salary = self.salary is not None
+        return no_assets and not salary
 
 def create_parser():
     parser = OptionParser(description="Quick check for asset computation.")
