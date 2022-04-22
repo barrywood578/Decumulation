@@ -234,6 +234,8 @@ class TestTaxes(unittest.TestCase):
         tax = taxes()
         tot_tax = tax.compute_taxes(1000)
         self.assertEqual(tot_tax, 255.5)
+        tot_tax = tax.compute_taxes(0)
+        self.assertEqual(tot_tax, 0)
 
     def test_gross_income_for_net_income(self):
         tax = taxes()

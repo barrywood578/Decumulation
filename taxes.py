@@ -94,7 +94,7 @@ class taxes(object):
 
     def compute_taxes(self, income=0.0):
         if income <= 0:
-            return 0.0, 0.0
+            return 0.0
         fed_taxes = round(self._federal_taxes(income), 2)
         prov_taxes = round(self._provincial_taxes(income), 2)
         return round(fed_taxes + prov_taxes, 2)
